@@ -1,3 +1,4 @@
+import * as demo from 'lib/demo.data'
 import {
   apiVersion,
   dataset,
@@ -49,14 +50,29 @@ export function getClient(preview?: {
 export const getSanityImageConfig = () => getClient()
 
 export async function getSettings(client: SanityClient): Promise<Settings> {
+  // Return demo data if using placeholder project ID
+  if (projectId === 'your-project-id') {
+    return {
+      title: demo.title,
+      description: demo.description,
+    }
+  }
   return (await client.fetch(settingsQuery)) || {}
 }
 
 export async function getAllPosts(client: SanityClient): Promise<Post[]> {
+  // Return empty array if using placeholder project ID
+  if (projectId === 'your-project-id') {
+    return []
+  }
   return (await client.fetch(indexQuery)) || []
 }
 
 export async function getAllPostsSlugs(): Promise<Pick<Post, 'slug'>[]> {
+  // Return empty array if using placeholder project ID
+  if (projectId === 'your-project-id') {
+    return []
+  }
   const client = getClient()
   const slugs = (await client.fetch<string[]>(postSlugsQuery)) || []
   return slugs.map((slug) => ({ slug }))
